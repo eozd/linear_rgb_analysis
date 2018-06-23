@@ -3,6 +3,6 @@
 
 #include "line_params_2D.h"
 
-struct LineParams2D linear_regression(int* y_arr, int num_values);
+struct LineParams2D linear_regression(const int* y_arr, int num_values);
 
 #endif

@@ -1,8 +1,9 @@
 #include <stdio.h>
+#include <assert.h>
 #include <stdlib.h>
 #include "rgb_analysis.h"
 
-void read_hex_arr(FILE* stream, int* out_arr, int num_values) {
+static void read_hex_arr(FILE* stream, int* out_arr, int num_values) {
     char line[10];
     int value;
     int idx = 0;
@@ -10,6 +11,39 @@ void read_hex_arr(FILE* stream, int* out_arr, int num_values) {
         value = strtol(line, NULL, 16);
         out_arr[idx++] = value;
     }
+}
+
+static void separate_rgb_arr(const int* rgb_arr, int num_values, int* r_arr, int* g_arr,
+                      int* b_arr) {
+    int i = 0;
+    while (i < num_values) {
+        int color_idx = i / 3;
+        r_arr[color_idx] = rgb_arr[i++];
+        g_arr[color_idx] = rgb_arr[i++];
+        b_arr[color_idx] = rgb_arr[i++];
+    }
+}
+
+static void print_stats(const struct RGBStatistics* stats) {
+	printf("RED Stream Statistics\n");
+	printf("---------------------\n");
+	printf("Predicted line slope                : %f\n", stats->red_line_slope);
+	printf("Mean squared error (less is better) : %f\n", stats->red_line_mse);
+	printf("R squared (1 is perfect)            : %f\n", stats->red_line_R_squared);
+	printf("\n");
+
+	printf("GREEN Stream Statistics\n");
+	printf("-----------------------\n");
+	printf("Predicted line slope                : %f\n", stats->green_line_slope);
+	printf("Mean squared error (less is better) : %f\n", stats->green_line_mse);
+	printf("R squared (1 is perfect)            : %f\n", stats->green_line_R_squared);
+	printf("\n");
+
+	printf("BLUE Stream Statistics\n");
+	printf("----------------------\n");
+	printf("Predicted line slope                : %f\n", stats->blue_line_slope);
+	printf("Mean squared error (less is better) : %f\n", stats->blue_line_mse);
+	printf("R squared (1 is perfect)            : %f\n", stats->blue_line_R_squared);
 }
 
 int main(int argc, char** argv) {
@@ -25,7 +59,22 @@ int main(int argc, char** argv) {
     read_hex_arr(datafile, rgb_arr, num_lines);
 	fclose(datafile);
 
-	analyze_rgb(rgb_arr, num_lines, 1);
+	assert(num_lines % 3 == 0);
+	int num_colors = num_lines / 3;
+
+	int* r_orig = (int*)(malloc(num_colors * sizeof(int)));
+	int* g_orig = (int*)(malloc(num_colors * sizeof(int)));
+	int* b_orig = (int*)(malloc(num_colors * sizeof(int)));
+
+    separate_rgb_arr(rgb_arr, num_lines, r_orig, g_orig, b_orig);
+	struct RGBStatistics stats = analyze_rgb(num_colors, r_orig, g_orig, b_orig, 1);
+	print_stats(&stats);
 
     free(rgb_arr);
+	free(r_orig);
+	free(g_orig);
+	free(b_orig);
+
+	int x;
+	scanf("%d", &x);
 }
