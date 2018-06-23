@@ -6,11 +6,12 @@
 static void read_hex_arr(FILE* stream, int* out_arr, int num_values) {
     char line[10];
     int value;
-    int idx = 0;
-    while (fgets(line, sizeof(line), stream)) {
-        value = strtol(line, NULL, 16);
-        out_arr[idx++] = value;
-    }
+    int i;
+	for (i = 0; i < num_values; ++i) {
+		fgets(line, sizeof(line), stream);
+		value = strtol(line, NULL, 16);
+		out_arr[i] = value;
+	}
 }
 
 static void separate_rgb_arr(const int* rgb_arr, int num_values, int* r_arr, int* g_arr,
@@ -53,8 +54,10 @@ int main(int argc, char** argv) {
 	}
 	FILE* datafile = fopen(argv[1], "r");
 
-    int num_lines;
-    fscanf(datafile, "%d\n", &num_lines);
+	char buffer[7];
+	fgets(buffer, 7, datafile);
+    int num_lines = strtol(buffer, NULL, 10);
+
     int* rgb_arr = (int*)(malloc(num_lines * sizeof(int)));
     read_hex_arr(datafile, rgb_arr, num_lines);
 	fclose(datafile);

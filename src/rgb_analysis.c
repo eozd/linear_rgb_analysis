@@ -14,7 +14,7 @@ static void write_gnuplot_script(FILE* stream, int num_colors, const int* orig_a
 
 	int i;
 	for (i = 0; i < 3; ++i) {
-		fprintf(stream, "set terminal qt %d title \"%s\"\n", i, title_arr[i]);
+		fprintf(stream, "set terminal \'qt\' %d title \"%s\" persist\n", i, title_arr[i]);
 		fprintf(stream, "set title \"%s\"\n", title_arr[i]);
 		fprintf(stream, "set xlabel \"Index\"\n");
 		fprintf(stream, "set ylabel \"%s value\"\n", title_arr[i]);
@@ -25,11 +25,13 @@ static void write_gnuplot_script(FILE* stream, int num_colors, const int* orig_a
 		for (j = 0; j < num_colors; ++j) {
 			fprintf(stream, "%d %d %f\n", j, orig_arrs[i][j], 0.25);
 		}
-		fprintf(stream, "EOF\n");
+		fprintf(stream, "e\n");
 		for (j = 0; j < num_colors; ++j) {
 			fprintf(stream, "%d %f\n", j, pred_arrs[i][j]);
 		}
+		fprintf(stream, "pause mouse close\n");
 		fprintf(stream, "EOF\n");
+		fprintf(stream, "pause 0.1\n");
 	}
 }
 
@@ -98,9 +100,9 @@ struct RGBStatistics analyze_rgb(int num_colors, const int* r_orig, const int* g
 
 	if (draw_graphs) {
 #ifdef LINUX
-		system("gnuplot -p -c gnuplot_script.plt");
+		system("gnuplot -persist -c gnuplot_script.plt");
 #elif defined WINDOWS
-		system("gnuplot\\bin\\gnuplot.exe -p -c gnuplot_script.plt");
+		system("gnuplot\\bin\\gnuplot.exe -persist -c gnuplot_script.plt");
 #else
 		printf("Undefined platform. Define LINUX or WINDOWS!\n");
 #endif
