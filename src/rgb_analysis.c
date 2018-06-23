@@ -4,6 +4,7 @@
 #include "rgb_analysis.h"
 #include "linear_regression.h"
 #include "line_params_2D.h"
+#include "utils.h"
 
 static void write_gnuplot_script(FILE* stream, int num_colors, const int* orig_arrs[3], const double* pred_arrs[3], const char* title_arr[3]) {
 	char* color_names[3];
@@ -31,46 +32,6 @@ static void write_gnuplot_script(FILE* stream, int num_colors, const int* orig_a
 		fprintf(stream, "EOF\n");
 	}
 }
-
-
-static double mse(int num_colors, const int* orig, const double* pred) {
-	double result = 0;
-	double diff;
-	int i;
-	for (i = 0; i < num_colors; ++i) {
-		diff = orig[i] - pred[i];
-		result += diff * diff;
-	}
-	result /= num_colors;
-	return result;
-}
-
-
-static double r_squared(int num_colors, const int* orig, const double* pred) {
-	double pred_mean = 0;
-	double tot_sum_squared = 0;
-	double res_sum_squared = 0;
-	double diff;
-
-	int i;
-	for (i = 0; i < num_colors; ++i) {
-		pred_mean += pred[i];
-	}
-	pred_mean /= num_colors;
-
-	for (i = 0; i < num_colors; ++i) {
-		diff = orig[i] - pred_mean;
-		tot_sum_squared += diff * diff;
-	}
-
-	for (i = 0; i < num_colors; ++i) {
-		diff = orig[i] - pred[i];
-		res_sum_squared += diff * diff;
-	}
-
-	return 1 - (res_sum_squared / tot_sum_squared);
-}
-
 
 static void calculate_stats(int num_colors, const int* orig_arrs[3], const double* pred_arrs[3], const struct LineParams2D* line_arrs[3], struct RGBStatistics* out_stats) {
 	out_stats->red_line_slope = line_arrs[0]->slope;
