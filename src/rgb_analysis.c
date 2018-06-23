@@ -16,16 +16,19 @@ static void write_gnuplot_script(FILE* stream, int num_colors, const int* orig_a
 	int i;
 	for (i = 0; i < 3; ++i) {
 		fprintf(stream, "set terminal qt %d title \"%s\"\n", i, title_arr[i]);
-		fprintf(stream, "plot \"-\" with points lc rgb \"%s\" title \"%s source\", \\\n", color_names[i], title_arr[i]);
-		fprintf(stream, "     \"-\" with points lc rgb \"0x000000\" title \"%s predicted\"\n", title_arr[i]);
+		fprintf(stream, "set title \"%s\"\n", title_arr[i]);
+		fprintf(stream, "set xlabel \"Index\"\n");
+		fprintf(stream, "set ylabel \"%s value\"\n", title_arr[i]);
+		fprintf(stream, "plot \"-\" with circles lc rgb \"%s\" fill solid title \"%s source\", \\\n", color_names[i], title_arr[i]);
+		fprintf(stream, "     \"-\" with line lc rgb \"0x000000\" title \"%s predicted\"\n", title_arr[i]);
 
 		int j;
 		for (j = 0; j < num_colors; ++j) {
-			fprintf(stream, "%d\n", orig_arrs[i][j]);
+			fprintf(stream, "%d %d %f\n", j, orig_arrs[i][j], 0.25);
 		}
 		fprintf(stream, "EOF\n");
 		for (j = 0; j < num_colors; ++j) {
-			fprintf(stream, "%f\n", pred_arrs[i][j]);
+			fprintf(stream, "%d %f\n", j, pred_arrs[i][j]);
 		}
 		fprintf(stream, "EOF\n");
 	}
