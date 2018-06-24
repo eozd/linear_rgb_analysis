@@ -2,3 +2,4 @@ gnuplot_script.plt
 data
 build
 src/*.gch
+doc
