@@ -14,19 +14,20 @@ double mse(int num_values, const int* y_true, const double* y_pred) {
 }
 
 double r_squared(int num_values, const int* y_true, const double* y_pred) {
-	double pred_mean = 0;
+	const double eps = 1e-50;
+	double y_mean = 0;
 	double tot_sum_squared = 0;
 	double res_sum_squared = 0;
 	double diff;
 
 	int i;
 	for (i = 0; i < num_values; ++i) {
-		pred_mean += y_pred[i];
+		y_mean += y_true[i];
 	}
-	pred_mean /= num_values;
+	y_mean /= num_values;
 
 	for (i = 0; i < num_values; ++i) {
-		diff = y_true[i] - pred_mean;
+		diff = y_true[i] - y_mean;
 		tot_sum_squared += diff * diff;
 	}
 
@@ -35,6 +36,6 @@ double r_squared(int num_values, const int* y_true, const double* y_pred) {
 		res_sum_squared += diff * diff;
 	}
 
-	return 1 - (res_sum_squared / tot_sum_squared);
+	return 1 - (res_sum_squared / (tot_sum_squared + eps));
 }
 

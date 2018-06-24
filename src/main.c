@@ -30,21 +30,18 @@ static void print_stats(const struct RGBStatistics* stats) {
 	printf("---------------------\n");
 	printf("Predicted line right angle          : %f\n", stats->red_line_angle);
 	printf("Mean squared error (less is better) : %f\n", stats->red_line_mse);
-	printf("R squared (1 is perfect)            : %f\n", stats->red_line_R_squared);
 	printf("\n");
 
 	printf("GREEN Stream Statistics\n");
 	printf("-----------------------\n");
 	printf("Predicted line right angle          : %f\n", stats->green_line_angle);
 	printf("Mean squared error (less is better) : %f\n", stats->green_line_mse);
-	printf("R squared (1 is perfect)            : %f\n", stats->green_line_R_squared);
 	printf("\n");
 
 	printf("BLUE Stream Statistics\n");
 	printf("----------------------\n");
 	printf("Predicted line right angle          : %f\n", stats->blue_line_angle);
 	printf("Mean squared error (less is better) : %f\n", stats->blue_line_mse);
-	printf("R squared (1 is perfect)            : %f\n", stats->blue_line_R_squared);
 }
 
 int main(int argc, char** argv) {
@@ -70,7 +67,7 @@ int main(int argc, char** argv) {
 	int* b_orig = (int*)(malloc(num_colors * sizeof(int)));
 
     separate_rgb_arr(rgb_arr, num_lines, r_orig, g_orig, b_orig);
-	struct RGBStatistics stats = analyze_rgb(num_colors, r_orig, g_orig, b_orig, 1);
+	struct RGBStatistics stats = analyze_rgb(num_colors, r_orig, g_orig, b_orig, "HX42457NTH", 1);
 	print_stats(&stats);
 
     free(rgb_arr);
