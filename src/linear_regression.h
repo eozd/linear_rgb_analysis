@@ -20,10 +20,6 @@
  * corresponds to model parameters. When the coordinates are 2D,
  * \f$\boldsymbol{\beta}\f$ consists of two values: slope and y-intercept.
  *
- * This function fits a linear regression model by employing gradient descent
- * updates where error term is normally distributed with 0 mean. The found line
- * is returned as a LineParams2D struct containing the slope and the intercept.
- *
  * @param num_values Number of data points to fit.
  * @param x_arr Pointer to the beginning of input variable array
  * (\f$\boldsymbol{X}\f$).
