@@ -1,4 +1,5 @@
 #include <string.h>
+#include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include "rgb_analysis.h"
@@ -36,15 +37,15 @@ static void write_gnuplot_script(FILE* stream, int num_colors, const int* orig_a
 }
 
 static void calculate_stats(int num_colors, const int* orig_arrs[3], const double* pred_arrs[3], const struct LineParams2D* line_arrs[3], struct RGBStatistics* out_stats) {
-	out_stats->red_line_slope = line_arrs[0]->slope;
+	out_stats->red_line_angle = atan(line_arrs[0]->slope) * 180.0 / PI;
 	out_stats->red_line_mse = mse(num_colors, orig_arrs[0], pred_arrs[0]);
 	out_stats->red_line_R_squared = r_squared(num_colors, orig_arrs[0], pred_arrs[0]);
 
-	out_stats->green_line_slope = line_arrs[1]->slope;
+	out_stats->green_line_angle = atan(line_arrs[1]->slope) * 180.0 / PI;
 	out_stats->green_line_mse = mse(num_colors, orig_arrs[1], pred_arrs[1]);
 	out_stats->green_line_R_squared = r_squared(num_colors, orig_arrs[1], pred_arrs[1]);
 
-	out_stats->blue_line_slope = line_arrs[2]->slope;
+	out_stats->blue_line_angle = atan(line_arrs[2]->slope) * 180.0 / PI;
 	out_stats->blue_line_mse = mse(num_colors, orig_arrs[2], pred_arrs[2]);
 	out_stats->blue_line_R_squared = r_squared(num_colors, orig_arrs[2], pred_arrs[2]);
 

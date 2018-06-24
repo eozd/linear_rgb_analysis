@@ -2,13 +2,13 @@
 #define RGB_ANALYSIS_H
 
 struct RGBStatistics {
-	double red_line_slope;
+	double red_line_angle;
 	double red_line_mse;
 	double red_line_R_squared;
-	double green_line_slope;
+	double green_line_angle;
 	double green_line_mse;
 	double green_line_R_squared;
-	double blue_line_slope;
+	double blue_line_angle;
 	double blue_line_mse;
 	double blue_line_R_squared;
 };

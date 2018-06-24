@@ -28,21 +28,21 @@ static void separate_rgb_arr(const int* rgb_arr, int num_values, int* r_arr, int
 static void print_stats(const struct RGBStatistics* stats) {
 	printf("RED Stream Statistics\n");
 	printf("---------------------\n");
-	printf("Predicted line slope                : %f\n", stats->red_line_slope);
+	printf("Predicted line right angle          : %f\n", stats->red_line_angle);
 	printf("Mean squared error (less is better) : %f\n", stats->red_line_mse);
 	printf("R squared (1 is perfect)            : %f\n", stats->red_line_R_squared);
 	printf("\n");
 
 	printf("GREEN Stream Statistics\n");
 	printf("-----------------------\n");
-	printf("Predicted line slope                : %f\n", stats->green_line_slope);
+	printf("Predicted line right angle          : %f\n", stats->green_line_angle);
 	printf("Mean squared error (less is better) : %f\n", stats->green_line_mse);
 	printf("R squared (1 is perfect)            : %f\n", stats->green_line_R_squared);
 	printf("\n");
 
 	printf("BLUE Stream Statistics\n");
 	printf("----------------------\n");
-	printf("Predicted line slope                : %f\n", stats->blue_line_slope);
+	printf("Predicted line right angle          : %f\n", stats->blue_line_angle);
 	printf("Mean squared error (less is better) : %f\n", stats->blue_line_mse);
 	printf("R squared (1 is perfect)            : %f\n", stats->blue_line_R_squared);
 }
