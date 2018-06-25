@@ -1,6 +1,8 @@
 #ifndef RGB_ANALYSIS_H
 #define RGB_ANALYSIS_H
 
+#include <stdbool.h>
+
 /**
  * @brief Struct to hold the output statistics of an RGB analysis.
  */
@@ -64,11 +66,11 @@ struct RGBStatistics {
  * integers.
  * @param serial_no Serial number of the tested device as a string. This number
  * will be displayed as the graphical window title.
- * @param draw_graph If set to 1, a graphical representation of the analysis
- * will be displayed. If set to 0, no graphics are displayed.
+ * @param draw_graph If true, a graphical representation of the analysis
+ * will be displayed. Otherwise, no graphics are displayed.
  */
 struct RGBStatistics analyze_rgb(int num_colors, const int* r_orig,
                                  const int* g_orig, const int* b_orig,
-                                 const char* serial_no, int draw_graph);
+                                 const char* serial_no, bool draw_graph);
 
 #endif

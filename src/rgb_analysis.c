@@ -101,7 +101,7 @@ static void calculate_stats(int num_colors, const int* orig_arrs[3],
 
 struct RGBStatistics analyze_rgb(int num_colors, const int* r_orig,
                                  const int* g_orig, const int* b_orig,
-                                 const char* serial_no, int draw_graphs) {
+                                 const char* serial_no, bool draw_graphs) {
     int* x_arr = (int*)(malloc(num_colors * sizeof(int)));
     int i;
     for (i = 0; i < num_colors; ++i) {

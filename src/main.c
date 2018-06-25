@@ -70,7 +70,7 @@ int main(int argc, char** argv) {
 
     separate_rgb_arr(rgb_arr, num_lines, r_orig, g_orig, b_orig);
     struct RGBStatistics stats =
-        analyze_rgb(num_colors, r_orig, g_orig, b_orig, "HX42457NTH", 1);
+        analyze_rgb(num_colors, r_orig, g_orig, b_orig, "HX42457NTH", true);
     print_stats(&stats);
 
     free(rgb_arr);
