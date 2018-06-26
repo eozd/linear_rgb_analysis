@@ -64,13 +64,20 @@ struct RGBStatistics {
  * as integers.
  * @param b_orig Pointer to the beginning of Blue channel pixel values stored as
  * integers.
- * @param serial_no Serial number of the tested device as a string. This number
- * will be displayed as the graphical window title.
  * @param draw_graph If true, a graphical representation of the analysis
  * will be displayed. Otherwise, no graphics are displayed.
+ * @param serial_no Serial number of the tested device as a string. This number
+ * will be displayed as the graphical window title.
+ * @param gnuplot_path Path to the gnuplot executable to be used for drawing
+ * purposes.
+ *
+ * @param outputs Output statistics. For definition of each field, refer to
+ * RGBStatistics documentation.
+ *
+ * @return Error code. If equal to 0, no error has occurred.
  */
-struct RGBStatistics analyze_rgb(int num_colors, const int* r_orig,
-                                 const int* g_orig, const int* b_orig,
-                                 const char* serial_no, bool draw_graph);
+int analyze_rgb(int num_colors, const int* r_orig, const int* g_orig,
+                const int* b_orig, bool draw_graph, const char* serial_no,
+                const char* gnuplot_path, struct RGBStatistics* outputs);
 
 #endif

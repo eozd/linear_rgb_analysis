@@ -88,20 +88,20 @@ static void write_gnuplot_script(FILE* stream, int num_colors,
 static void calculate_stats(int num_colors, const int* orig_arrs[3],
                             const double* pred_arrs[3],
                             const struct LineParams2D* line_arrs[3],
-                            struct RGBStatistics* out_stats) {
-    out_stats->red_line_angle = atan(line_arrs[0]->slope) * 180.0 / PI;
-    out_stats->red_line_mse = mse(num_colors, orig_arrs[0], pred_arrs[0]);
+                            struct RGBStatistics* outputs) {
+    outputs->red_line_angle = atan(line_arrs[0]->slope) * 180.0 / PI;
+    outputs->red_line_mse = mse(num_colors, orig_arrs[0], pred_arrs[0]);
 
-    out_stats->green_line_angle = atan(line_arrs[1]->slope) * 180.0 / PI;
-    out_stats->green_line_mse = mse(num_colors, orig_arrs[1], pred_arrs[1]);
+    outputs->green_line_angle = atan(line_arrs[1]->slope) * 180.0 / PI;
+    outputs->green_line_mse = mse(num_colors, orig_arrs[1], pred_arrs[1]);
 
-    out_stats->blue_line_angle = atan(line_arrs[2]->slope) * 180.0 / PI;
-    out_stats->blue_line_mse = mse(num_colors, orig_arrs[2], pred_arrs[2]);
+    outputs->blue_line_angle = atan(line_arrs[2]->slope) * 180.0 / PI;
+    outputs->blue_line_mse = mse(num_colors, orig_arrs[2], pred_arrs[2]);
 }
 
-struct RGBStatistics analyze_rgb(int num_colors, const int* r_orig,
-                                 const int* g_orig, const int* b_orig,
-                                 const char* serial_no, bool draw_graphs) {
+int analyze_rgb(int num_colors, const int* r_orig, const int* g_orig,
+                const int* b_orig, bool draw_graphs, const char* serial_no,
+                const char* gnuplot_path, struct RGBStatistics* outputs) {
     int* x_arr = (int*)(malloc(num_colors * sizeof(int)));
     int i;
     for (i = 0; i < num_colors; ++i) {
@@ -140,9 +140,9 @@ struct RGBStatistics analyze_rgb(int num_colors, const int* r_orig,
     line_arrs[2] = &b_line;
 
     int title_buffer_size = strlen(serial_no) + 10;
-    char* red_title = (char*)(malloc(title_buffer_size * sizeof(char)));
-    char* green_title = (char*)(malloc(title_buffer_size * sizeof(char)));
-    char* blue_title = (char*)(malloc(title_buffer_size * sizeof(char)));
+    char* red_title = (char*)(calloc(title_buffer_size, sizeof(char)));
+    char* green_title = (char*)(calloc(title_buffer_size, sizeof(char)));
+    char* blue_title = (char*)(calloc(title_buffer_size, sizeof(char)));
 
     sprintf(red_title, "%s_%s", "RED", serial_no);
     sprintf(green_title, "%s_%s", "GREEN", serial_no);
@@ -152,22 +152,40 @@ struct RGBStatistics analyze_rgb(int num_colors, const int* r_orig,
     title_arr[1] = green_title;
     title_arr[2] = blue_title;
 
-    struct RGBStatistics result_stats;
-    calculate_stats(num_colors, orig_arrs, pred_arrs, line_arrs, &result_stats);
+    calculate_stats(num_colors, orig_arrs, pred_arrs, line_arrs, outputs);
 
-    FILE* gnuplot_script = fopen("gnuplot_script.plt", "w");
-    double red_stats[2] = {result_stats.red_line_angle,
-                           result_stats.red_line_mse};
-    double green_stats[2] = {result_stats.green_line_angle,
-                             result_stats.green_line_mse};
-    double blue_stats[2] = {result_stats.blue_line_angle,
-                            result_stats.blue_line_mse};
+    char* filename = (char*)(calloc(strlen(serial_no) + 50, sizeof(char)));
+    sprintf(filename, "gnuplot_%s.plt", serial_no);
+    FILE* gnuplot_script = fopen(filename, "w");
+    double red_stats[2];
+    red_stats[0] = outputs->red_line_angle;
+    red_stats[1] = outputs->red_line_mse;
+
+    double green_stats[2];
+    green_stats[0] = outputs->green_line_angle;
+    green_stats[1] = outputs->green_line_mse;
+
+    double blue_stats[2];
+    blue_stats[0] = outputs->blue_line_angle;
+    blue_stats[1] = outputs->blue_line_mse;
+
     const double* stat_arr[3] = {red_stats, green_stats, blue_stats};
 
     write_gnuplot_script(gnuplot_script, num_colors, orig_arrs, pred_arrs,
                          title_arr, stat_arr);
     fclose(gnuplot_script);
 
+    if (draw_graphs) {
+        int gnuplot_path_len = strlen(gnuplot_path);
+        int cmd_len = gnuplot_path_len + strlen(filename) + 100;
+
+        char* cmd = (char*)(calloc(cmd_len, sizeof(char)));
+        sprintf(cmd, "%s -p -c %s", gnuplot_path, filename);
+        system(cmd);
+        free(cmd);
+    }
+
+    free(filename);
     free(red_title);
     free(green_title);
     free(blue_title);
@@ -175,15 +193,5 @@ struct RGBStatistics analyze_rgb(int num_colors, const int* r_orig,
     free(g_pred);
     free(b_pred);
 
-    if (draw_graphs) {
-#ifdef LINUX
-        system("gnuplot -persist -c gnuplot_script.plt");
-#elif defined WINDOWS
-        system("gnuplot\\bin\\gnuplot.exe -persist -c gnuplot_script.plt");
-#else
-        printf("Undefined platform. Define LINUX or WINDOWS!\n");
-#endif
-    }
-
-    return result_stats;
+    return 0;
 }
